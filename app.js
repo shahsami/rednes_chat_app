@@ -4,12 +4,22 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+
 io.on('connection', function(client) {
 	console.log('Client connected..');
 
+	client.on('join', function(name) {
+			
+			client.nickname = name; // set the nickname associated with the client
+		});
+
 	client.on('messages', function(data) { //listen for messages e
-		console.log(data);
-		//client.broadcast.emit('messages', data);
+		var nickname = client.nickname; //get the nickname of the client
+		//console.log(data);
+
+		client.broadcast.emit("message", nickname + ": " + message); //broadcast with name and message
+		client.emit("messages", nickname + ": " + message); //send the message back to out client
+
 	});
 	
 
