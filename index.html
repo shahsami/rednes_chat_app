@@ -66,16 +66,24 @@ input[type=submit]:active { border: 1px solid #aaa; border-bottom: 1px solid #88
 		insertMessage( nickname + ' : ' + chat_input.value );
 		chat_input.value = null;
 	};
-	server.on( 'messages', function( message ) {
-		insertMessage( message );
+	server.on( 'messages', function( data ) {
+		insertMessage( data );
 	});
-	server.on( 'connect', function( message ) {
+	server.on( 'connect', function( data ) {
 		chat_console.innerHTML = '<span class="connected">connected to the chat server</span><br/>';
 		nickname = prompt( 'what is your nickanme?' );
 		server.emit( 'join', nickname ); //notify the server of the user nickname
 	});
-	server.on( 'add chatter', insertChatter );
-	server.on( 'remove chatter', removeChatter );
+	//server.on( 'add chatter', insertChatter );
+		server.on( 'add chatter', function(name) {
+			var chatter = $('<li>'+name+'<li>').data('name' name);
+			$('#chatters').append(chatter);
+		});
+
+	//server.on( 'remove chatter', removeChatter );
+	server.on( 'remove chatter', function(name) {
+		$('#chatters li[data-name=' + name +']').remove();
+	});
 	</script>
 	
 </body>
